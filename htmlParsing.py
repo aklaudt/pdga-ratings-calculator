@@ -2,10 +2,26 @@ from player import Player
 
 
 class HtmlParser:
+    @staticmethod
+    def getYearsPlayedFromInfoPage(html):
+        mainHeader = html.findAll("h1")[0]
+
+        if(mainHeader.text != "Page not found" and mainHeader.text != "Access denied"):
+
+            yearLink = html.findAll("ul", {"class", "tabs secondary"})[0]
+            yearsTags = yearLink.find_all("li")
+            years = []
+
+            for yearTag in yearsTags:
+                years.append(yearTag.find("a").text)
+            return years
+
+
+    @staticmethod
     def getPlayerStatusFromInfoPage(html):
         mainHeader = html.findAll("h1")[0]
 
-        if(mainHeader.text != "Page not found"):
+        if(mainHeader.text != "Page not found" and mainHeader.text != "Access denied"):
             (name, pdgaNumber) = mainHeader.text.split("#")
             playerInfoList = html.find("ul", {"class", "player-info"})
 

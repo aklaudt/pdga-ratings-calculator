@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from pdgaRequests import pdgaRequests
 from database import Database
 from htmlParsing import HtmlParser
+from utils import ingestNewMembers
 
 # pdgaNumber = 1
 # playerInfo = pdgaRequests.getPlayerInfoPage(pdgaNumber)
@@ -11,13 +12,9 @@ conn = Database.createConnection("./pdga.db")
 # Database.dropPlayersTable(conn)
 # Database.createPlayersTable(conn)
 
-startingPdgaNumber = Database.getHighestPdgaNumberInDb(conn) + 1
+pdga = 97510
+html = pdgaRequests.getPlayerDetails(pdga)
+htmlInside = html.find("div", {"class", "inside"})
 
-for i in range(startingPdgaNumber, startingPdgaNumber + 250):
-    html = pdgaRequests.getPlayerInfoPage(i)
-    htmlInside = html.find("div", {"class", "inside"})
-    player = HtmlParser.getPlayerStatusFromInfoPage(html)
-    print(player)
-
-    if player is not None:
-        Database.addPlayerToDb(conn, player)
+rows = htmlInside.find_all("tr")
+print(rows)

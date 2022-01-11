@@ -15,3 +15,15 @@ class Player:
 
     def __str__(self):
         return f"{self.pdgaNumber}: {self.name}"
+
+class RatedRound:
+    def __init__(self, tournament, tier, date, division, roundNumber, score, rating, evaluated, included):
+        self.tournament = tournament 
+        self.tier = tier 
+        self.date = date 
+        self.division = division 
+        self.roundNumber = roundNumber 
+        self.score = score 
+        self.rating = rating 
+        self.evaluated = evaluated 
+        self.included = included

@@ -11,9 +11,13 @@ conn = Database.createConnection("./pdga.db")
 # Database.dropPlayersTable(conn)
 # Database.createPlayersTable(conn)
 
-for i in range(1, 250):
+startingPdgaNumber = Database.getHighestPdgaNumberInDb(conn) + 1
+
+for i in range(startingPdgaNumber, startingPdgaNumber + 250):
     html = pdgaRequests.getPlayerInfoPage(i)
     htmlInside = html.find("div", {"class", "inside"})
     player = HtmlParser.getPlayerStatusFromInfoPage(html)
     print(player)
-    Database.addPlayerToDb(conn, player)
+
+    if player is not None:
+        Database.addPlayerToDb(conn, player)

@@ -60,7 +60,7 @@ class Database:
             print(e)
 
     @staticmethod
-    def agetHighestPdgaNumberInDb(conn):
+    def getHighestPdgaNumberInDb(conn):
         try:
             c = conn.cursor()
             c.execute(

@@ -21,7 +21,7 @@ class pdgaRequests:
 
     @staticmethod
     def getPlayerDetails(pdgaNumber):
-        url = baseUrl + f"player/{pdgaNumber}/stats"
+        url = baseUrl + f"player/{pdgaNumber}/details"
         r = requests.get(url)
         html = BeautifulSoup(r.content, 'html.parser')
         return html

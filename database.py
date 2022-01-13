@@ -1,6 +1,6 @@
 import sqlite3
 from sqlite3 import Error
-from player import Player
+from models import Player, RatedRound
 
 
 class Database:
@@ -25,6 +25,24 @@ class Database:
         pass
 
     @staticmethod
+    def createRatedRoundsTable(conn):
+        sql_create_rated_rounds_table = """   CREATE TABLE rated_rounds (
+                                        id integer PRIMARY KEY,
+                                        pdgaNumber integer NOT NULL,
+                                        tournament text NOT NULL,
+                                        tier text NOT NULL,
+                                        date datetime NOT NULL,
+                                        division text NOT NULL,
+                                        roundNumber integer NOT NULL,
+                                        score integer NOT NULL,
+                                        rating integer NOT NULL,
+                                        evaluated integer NOT NULL,
+                                        included integer NOT NULL
+                                        );"""
+
+        Database.run_sql(conn, sql_create_rated_rounds_table)
+
+    @staticmethod
     def createPlayersTable(conn):
         sql_create_playes_table = """   CREATE TABLE players (
                                         pdgaNumber integer PRIMARY KEY,
@@ -33,7 +51,7 @@ class Database:
                                         membershipExpired datetime NULL,
                                         status integer NOT NULL,
                                         classification text NULL,
-                                        officialStatus text NULL, 
+                                        officialStatus text NULL,
                                         officialStatusExpiration datetime NULL,
                                         currentRating integer NULL,
                                         careerEvents integer NULL,
@@ -44,9 +62,25 @@ class Database:
         Database.run_sql(conn, sql_create_playes_table)
 
     @staticmethod
+    def dropRatedRoundsTable(conn):
+        sql_drop_rated_rounds_table = """ drop table if exists rated_rounds"""
+        Database.run_sql(conn, sql_drop_rated_rounds_table)
+
+    @staticmethod
     def dropPlayersTable(conn):
         sql_drop_players_table = """ drop table if exists players"""
         Database.run_sql(conn, sql_drop_players_table)
+
+    @staticmethod
+    def addRatedRoundToDb(conn, ratedRound):
+        try:
+            c = conn.cursor()
+            data_tuple = ratedRound.pdgaNumber, ratedRound.tournament, ratedRound.tier, ratedRound.date, ratedRound.division, ratedRound.roundNumber, ratedRound.score, ratedRound.rating, ratedRound.evaluated, ratedRound.included
+            c.execute(
+                "INSERT INTO rated_rounds(pdgaNumber, tournament, tier, date, division, roundNumber, score, rating, evaluated, included) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", data_tuple)
+            conn.commit()
+        except Error as e:
+            print(e)
 
     @staticmethod
     def addPlayerToDb(conn, player):
@@ -58,6 +92,13 @@ class Database:
             conn.commit()
         except Error as e:
             print(e)
+
+    @staticmethod
+    def getActivePdgaNumbers(conn):
+        c = conn.cursor()
+        c.execute(f'SELECT pdgaNumber from players where status="Current"')
+        result = c.fetchall()
+        return result
 
     @staticmethod
     def getHighestPdgaNumberInDb(conn):

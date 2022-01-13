@@ -1,4 +1,4 @@
-from player import Player
+from models import Player
 
 
 class HtmlParser:
@@ -16,7 +16,6 @@ class HtmlParser:
                 years.append(yearTag.find("a").text)
             return years
 
-
     @staticmethod
     def getPlayerStatusFromInfoPage(html):
         mainHeader = html.findAll("h1")[0]
@@ -26,7 +25,10 @@ class HtmlParser:
             playerInfoList = html.find("ul", {"class", "player-info"})
 
             listItem = playerInfoList.find(
-                "li", {"class", "location"}).find("a")
+                "li", {"class", "location"})
+
+            if listItem is not None:
+                listItem = listItem.find("a")
 
             if listItem is not None:
                 location = listItem.text.split(": ")[0]

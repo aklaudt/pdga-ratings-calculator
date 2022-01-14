@@ -110,3 +110,15 @@ class Database:
             return int(number)
         except Error as e:
             print(e)
+
+    @staticmethod
+    def getAllCurrentRatings(conn):
+        try:
+            c = conn.cursor()
+            c.execute(
+                "Select currentRating from players where currentRating is not null"
+            )
+            ratings = c.fetchall()
+            return ratings
+        except Error as e:
+            print(e)
